@@ -1,7 +1,4 @@
-#  добавить поулчение токена сюда??
 import pytest
-
-
 
 from endpoints.authorize_endpoint import Authorize
 from endpoints.get_token_life_endpoint import Token
@@ -50,13 +47,13 @@ def delete_meme():
 @pytest.fixture(scope='session')
 def create_token_for_test(authorize_token_endpoint):
     user = authorize_token_endpoint.authorize(payload={'name': 'Test User'})
-    token = user.json()['token']
+    token = user['token']
     return token
 
 
 @pytest.fixture()
 def get_name_from_token_for_test(create_token_for_test, check_token_life_endpoint):
-    user = check_token_life_endpoint.check_token_life(create_token_for_test).text
+    user = check_token_life_endpoint.check_token_life(create_token_for_test)
     name = user.split('Username is ')[1]
     return name
 
@@ -72,6 +69,6 @@ def create_meme_for_test(create_token_for_test, create_new_meme, delete_meme):
             "observer": "Eugene"
         }
     }
-    mem_id = create_new_meme.create_mem(payload=payload, token=create_token_for_test).json()['id']
+    mem_id = create_new_meme.create_mem(payload=payload, token=create_token_for_test)['id']
     yield mem_id
     delete_meme.delete_meme(meme_id=mem_id, token=create_token_for_test)
