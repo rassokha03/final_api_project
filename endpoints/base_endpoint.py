@@ -4,6 +4,7 @@ import allure
 class Endpoint:
     url = 'http://memesapi.course.qa-practice.com'
     response = None
+    json = None
 
     @allure.step('Проверка на статус код 200')
     def check_status_code_200(self):
