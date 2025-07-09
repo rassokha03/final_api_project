@@ -7,11 +7,17 @@ class Authorize(Endpoint):
 
     @allure.step('Авторизация')
     def authorize(self, payload):
-        self.response = requests.post(
-            url=f'{self.url}/authorize',
-            json=payload
-        )
-        return self.response
+        try:
+            self.response = requests.post(
+                url=f'{self.url}/authorize',
+                json=payload
+            )
+            self.response.raise_for_status()
+            self.json = self.response.json()
+            return self.json
+        except requests.exceptions.RequestException:
+            print("Произошла ошибка")
+            return self.response
 
     @allure.step('Получение имени из ответа')
     def check_name_in_the_response(self, name):
