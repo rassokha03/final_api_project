@@ -46,15 +46,14 @@ def delete_meme():
 
 @pytest.fixture(scope='session')
 def create_token_for_test(authorize_token_endpoint):
-    user = authorize_token_endpoint.authorize(payload={'name': 'Test User'})
+    user = authorize_token_endpoint.authorize(payload=authorize_token_endpoint.authorization_payload)
     token = user['token']
     return token
 
 
 @pytest.fixture()
-def get_name_from_token_for_test(create_token_for_test, check_token_life_endpoint):
-    user = check_token_life_endpoint.check_token_life(create_token_for_test)
-    name = user.split('Username is ')[1]
+def get_name_from_token_for_test(authorize_token_endpoint):
+    name = authorize_token_endpoint.authorization_payload['name']
     return name
 
 
