@@ -3,6 +3,7 @@ import allure
 
 class Endpoint:
     url = 'http://memesapi.course.qa-practice.com'
+    authorization_payload = {'name': 'Test User'}
     response = None
     json = None
 
@@ -29,3 +30,10 @@ class Endpoint:
     @allure.step('Проверка на статус код 403')
     def check_status_code_403(self):
         assert self.response.status_code == 403
+
+    @allure.step('Сравнение тела запроса и ответа')
+    def check_body_and_response(self, payload):
+        assert self.response.json()["text"] == payload["text"]
+        assert self.response.json()["url"] == payload["url"]
+        assert self.response.json()["tags"] == payload["tags"]
+        assert self.response.json()["info"] == payload["info"]
