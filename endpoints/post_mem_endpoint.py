@@ -18,10 +18,3 @@ class CreateMeme(Endpoint):
         except requests.exceptions.RequestException:
             print("Произошла ошибка")
             return self.response
-
-    @allure.step('Сравнение созданного тела и ответа созданного мема')
-    def check_body_and_response(self, payload):
-        assert self.response.json()["text"] == payload["text"]
-        assert self.response.json()["url"] == payload["url"]
-        assert self.response.json()["tags"] == payload["tags"]
-        assert self.response.json()["info"] == payload["info"]
