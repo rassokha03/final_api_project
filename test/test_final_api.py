@@ -14,9 +14,9 @@ def test_authorization_with_name(authorize_token_endpoint):
         'name': 'Test'
     }
     authorize_token_endpoint.authorize(payload=payload)
+    authorize_token_endpoint.check_status_code_200()
     authorize_token_endpoint.check_name_in_the_response(name=payload['name'])
     authorize_token_endpoint.check_the_token_in_the_response()
-    authorize_token_endpoint.check_status_code_200()
 
 
 @allure.feature('Авторизация')
@@ -58,6 +58,7 @@ def test_check_token_is_alive_with_empty_token(check_token_life_endpoint, token)
 def test_get_all_meme(get_all_meme, create_token_for_test):
     get_all_meme.get_all_meme(create_token_for_test)
     get_all_meme.check_status_code_200()
+    get_all_meme.check_emptiness()
 
 
 @allure.feature('Мемы')
@@ -77,6 +78,7 @@ def test_get_all_meme_with_bad_token(get_all_meme, token):
 def test_get_one_meme(get_one_meme, create_token_for_test):
     get_one_meme.get_one_meme(create_token_for_test, mem_id=1)
     get_one_meme.check_status_code_200()
+    get_one_meme.check_mem_id(mem_id=1)
 
 
 @allure.feature('Мемы')
@@ -173,10 +175,12 @@ def test_create_meme_with_bad_url(create_token_for_test, create_new_meme):
 @allure.story('Delete метод')
 @allure.title('Удаление мема')
 @allure.label('owner', 'Andrey Rassokhin')
-def test_delete_meme(create_meme_for_test, create_token_for_test, delete_meme):
+def test_delete_meme(create_meme_for_test, create_token_for_test, delete_meme, get_one_meme):
     mem_id = create_meme_for_test
     delete_meme.delete_meme(meme_id=mem_id, token=create_token_for_test)
     delete_meme.check_status_code_200()
+    get_one_meme.get_one_meme(token=create_token_for_test, mem_id=mem_id)
+    get_one_meme.check_status_code_404()
 
 
 @allure.feature('Мемы')
@@ -201,11 +205,12 @@ def test_delete_meme_another_creator(delete_meme, create_token_for_test):
 @allure.story('Put метод')
 @allure.title('Обновление мема ')
 @allure.label('owner', 'Andrey Rassokhin')
-def test_put_meme_with_valid_data(create_meme_for_test, put_meme, get_name_from_token_for_test, create_token_for_test):
+def test_put_meme_with_valid_data(create_meme_for_test, put_meme, get_name_from_token_for_test, create_token_for_test, get_one_meme):
     payload_for_put = valid_data_for_put(mem_id=create_meme_for_test)
     put_meme.put_meme(payload_for_put, mem_id=create_meme_for_test, token=create_token_for_test)
-    put_meme.check_who_updated_meme(name=get_name_from_token_for_test)
     put_meme.check_status_code_200()
+    put_meme.check_who_updated_meme(name=get_name_from_token_for_test)
+    put_meme.check_body_and_response(payload=payload_for_put)
 
 
 @allure.feature('Мемы')
