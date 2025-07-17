@@ -17,3 +17,7 @@ class GetOneMeme(Endpoint):
         except requests.exceptions.RequestException:
             print("Произошла ошибка")
             return self.response
+
+    @allure.step('Id мема равняется запрашиваему id')
+    def check_mem_id(self, mem_id):
+        assert self.json['id'] == mem_id, 'Вернулось не верное id мема'
