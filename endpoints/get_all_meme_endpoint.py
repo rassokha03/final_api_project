@@ -17,3 +17,7 @@ class GetAllMeme(Endpoint):
         except requests.exceptions.RequestException:
             print("Произошла ошибка")
             return self.response
+
+    @allure.step('Проверка, что в ответе вернулось не пустое значение')
+    def check_emptiness(self):
+        assert None not in self.json, 'Данные пустые'
