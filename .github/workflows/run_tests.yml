@@ -1,4 +1,4 @@
-name: Autotests for magento
+name: API autotests
 
 on:
   workflow_dispatch:
